@@ -21,4 +21,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/logs', 'LogController@showLog');
 
+Route::post('/logs', 'LogController@submitLog');
+
 //Route::get('/')
