@@ -23,4 +23,4 @@ Route::get('/logs', 'LogController@showLog');
 
 Route::post('/logs', 'LogController@submitLog');
 
-//Route::get('/')
+Route::get('/delete/log/{id}', 'LogController@deletelog');

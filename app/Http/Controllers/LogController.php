@@ -11,9 +11,10 @@ use Mockery\Exception;
 
 class LogController extends Controller
 {
+
     /**
-     * UserController constructor.
-     * Asuthentication middleware.
+     * @param array $data
+     * @return mixed
      */
     protected function validator(array $data)
     {
@@ -28,7 +29,11 @@ class LogController extends Controller
         $this->middleware('auth');
     }
 
-    //
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function saveLog(Request $request){
         $log = new MyLog();
         $data = $this->validate($request, [
@@ -40,11 +45,15 @@ class LogController extends Controller
 
     }
 
-    //
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|void
+     */
     public function showLog(Request $request){
         $user = Auth::user();
         try{
-            $Logs = MyLog::where('userId', '=', $user->id)->get();
+            $Logs = MyLog::where('userId', '=', $user->id)->orderBy('id','asc')->get();
 //            $Logs = MyLog::find(1);
         }
         catch (Exception $e){
@@ -55,6 +64,10 @@ class LogController extends Controller
         return view('logs.logs', compact('Logs'), compact('user'));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function submitLog(Request $request){
         $this->validator($request->all())->validate();
 
@@ -62,10 +75,21 @@ class LogController extends Controller
         $log->create([
             'userId' => $request['userId'],
             'log' => $request['log'],
+            'date' => date('Y-m-d'),
         ]);
 
         return redirect()->action(
             'LogController@showLog'
         );
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deletelog(Request $request, $id){
+        $log = MyLog::find($id);
+        $log->delete();
+        return redirect('/logs');
     }
 }

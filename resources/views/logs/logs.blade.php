@@ -6,46 +6,89 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Logs</div>
+                    <script>
+                        function deleteuser(id) {
+                            if(confirm('Are you sure')){
+                                window.location.href = "/delete/log/"+id;
+                            }
+                        }
+                    </script>
+                    <style>
+                        .time{
+                            width: 20px;
+                        }
+                    </style>
 
-                    <div class="panel-body">
                         @if (session('status'))
                             <div class="alert alert-success">
                                 {{ session('status') }}
                             </div>
                         @endif
-                        <table style='border-collapse: separate; border-spacing: 10px; width: 100%;'>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            <style>
-                                .time{
-                                    width: 20px;
-                                }
-                            </style>
-                            <script>
-                                function deleteuser(id) {
-                                    if(confirm('Are you sure')){
-                                        window.location.href = "/admin/delete/user/"+id;
-                                    }
-                                }
-                            </script>
-                            <?php
+
+
+
+                                    <?php
 //                                echo '<pre>';
 //                                print_r($Logs);
 //                                echo '</pre>';
                                 if(!empty($Logs)){
+                                    $date = '';
+                                    $flag = true;
+                                    $flag2 = false;
                                     foreach ($Logs  as $log) {
-                                        echo "<tr><td>".$log['created_at'] ."</td><td>". $log['log'] ."</td>" ;
+                                        if($date!= $log['date']){
+                                            $date=$log['date'];
+                                            if($flag==true){
+                                                ?>
+                    <div class="panel-body">
+                        <table style='border-collapse: separate; border-spacing: 10px; width: 100%;'>
+                            <tr>
+                                <th colspan="3">
+                                    <b><?php echo date('Y-m-d', strtotime($log['created_at'])) ?></b>
+                                </th>
+                            </tr>
 
+                    <?php
+                            echo "<tr><td style='width: 10%'>".date('h:i:s', strtotime($log['created_at'])) ."</td><td style='width: 75%'>". $log['log'] ."</td><td><i class='fa fa-trash' title='Delete User' style='cursor:pointer;color:#4093cf' onclick=\"deleteuser($log->id)\"></i></td></tr>" ;
+                                                $flag=false;
+                                            }else{
+                                                $flag2=true;
+                                                ?>
+
+                        </table>
+                    </div>
+                            <div class="panel-body">
+                                <table style='border-collapse: separate; border-spacing: 10px; width: 100%;'>
+                                    <tr>
+                                        <th colspan="3">
+                                            <b><?php echo date('Y-m-d', strtotime($log['created_at'])) ?></b>
+                                        </th>
+                                    </tr>
+
+                            <?php
+                            echo "<tr><td style='width: 10%'>".date('h:i:s', strtotime($log['created_at'])) ."</td><td style='width: 75%'>". $log['log'] ."</td><td><i class='fa fa-trash' title='Delete User' style='cursor:pointer;color:#4093cf' onclick=\"deleteuser($log->id)\"></i></td></tr>" ;
+                                            }
+                                        }else{
+                                        echo "<tr><td>".date('h:i:s', strtotime($log['created_at'])) ."</td><td style='width: 75%'>". $log['log'] ."</td><td><i class='fa fa-trash' title='Delete User' style='cursor:pointer;color:#4093cf' onclick=\"deleteuser($log->id)\"></i></td></tr>" ;
+                                    }
+                                        ?>
+
+                                    <?php
+
+
+                                    }
+                                    if($flag2){
+                                        echo '</table></div>';
                                     }
                                 }else{
                                     echo "<tr><td></td><td>No logs</td></tr>" ;
                                 }
                             ?>
-                            <tr class="row">
+                    <div class="panel-body">
+                        <table style='border-collapse: separate; border-spacing: 10px; width: 100%;'>
+                            <tr>
 
-                                    <td class="time" colspan="2">
+                                    <td class="time" colspan="3">
                                         <form action="/logs" method="POST">
                                             <textarea title="Enter logs" style="width: 100%;" name="log"></textarea>
                                             <br>

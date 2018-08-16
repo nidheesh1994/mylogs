@@ -1,5 +1,7 @@
 <?php
 
+
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -14,10 +16,11 @@ class CreateMyLogsTable extends Migration
     public function up()
     {
         Schema::create('my_logs', function (Blueprint $table) {
-            $table->increments('id')->primary();
+            $table->increments('id');
             $table->string('userId');
             $table->text('log');
             $table->timestamps();
+            $table->date('date');
         });
     }
 
